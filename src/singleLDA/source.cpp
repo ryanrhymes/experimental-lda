@@ -28,7 +28,7 @@ void show_help()
 		<< "  The input test data file. Data format described in readme under data folder." << std::endl;
 }
 
-int main(int argc, char ** argv) 
+int main(int argc, char ** argv)
 {
     model *lda = NULL;
 
@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
         throw;
     }
 
-    // Finally test the model	
+    // Finally test the model
     try {
         lda->test();
     } catch (std::exception& e) {
@@ -56,11 +56,7 @@ int main(int argc, char ** argv)
         throw;
     }
 
-    delete lda;	
+    delete lda;
 
-    system("pause");
     return 0;
 }
-
-
-

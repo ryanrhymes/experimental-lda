@@ -1,10 +1,10 @@
 #!/bin/bash
 
-DATASETS="nytimes" 
-METHODS="sparseLDA"
-NUM_ITER="1000"
+DATASETS="nips"
+METHODS="simpleLDA"
+NUM_ITER="10"
 NUM_TOPICS="1000"
-NT="64"
+NT="1"
 
 for DATASET in $DATASETS
 do
@@ -24,8 +24,8 @@ do
 	echo Using $NT threads total on Amazon EC2 c4.8xlarge | tee -a $DIR_NAME/log.txt
 
 	#run
-	#valgrind --leak-check=full --show-leak-kinds=all 
-	dist/parallelLDA --method "$METHOD" --testing-mode net --alpha 50 --beta 0.1 --num-threads $NT --num-topics $NUM_TOPICS --num-iterations $NUM_ITER --output-state-interval 1 --output-model $DIR_NAME --num-top-words 15 --dataset data/"$DATASET" | tee -a $DIR_NAME/log.txt
+	#valgrind --leak-check=full --show-leak-kinds=all
+	dist/singleLDA --method "$METHOD" --testing-mode net --alpha 50 --beta 0.1 --num-threads $NT --num-topics $NUM_TOPICS --num-iterations $NUM_ITER --output-state-interval 1 --output-model $DIR_NAME --num-top-words 15 --dataset data/"$DATASET" | tee -a $DIR_NAME/log.txt
 
 	git add "$DIR_NAME"
 	git pull

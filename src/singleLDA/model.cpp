@@ -2,7 +2,7 @@
 #include "lda.h"
 #include <sstream>
 
-model::model() 
+model::model()
 {
     testing_type = INVALID;
 
@@ -43,15 +43,15 @@ model::model()
     mdir = "./";
     dfile = "";
     tfile = "";
-    vfile = "";	
+    vfile = "";
 }
 
 model::~model()
 {
     if (trngdata) delete trngdata;
     if (testdata) delete testdata;
-	
-	
+
+
     if (z)
     {
         for (int m = 0; m < M; m++)
@@ -165,7 +165,7 @@ model* model::init(int argc, char ** argv)
     {
         // call parse_args
         lda->parse_args(arguments);
-            
+
         // read data
         lda->read_data();
     }
@@ -194,13 +194,23 @@ int model::train()
             std::cout << "Saving the model at iteration " << iter << "..." << std::endl;
             save_model(iter);
         }
-        
+
         std::cout << "Iteration " << iter << " ..." << std::endl;
         ts = std::chrono::high_resolution_clock::now();
+        int m0 = 0;
 
         // for each document
-        for (unsigned m = 0; m < M; ++m)
-                sampling(m);
+        for (unsigned m = 0; m < M; ++m) {
+          sampling(m);
+
+          tn = std::chrono::high_resolution_clock::now();
+          auto ti = std::chrono::duration_cast<std::chrono::milliseconds>(tn - ts).count();
+          if (ti >= 1000) {
+            std::cout << "speed: " << (m - m0) << " docs/s" << std::endl;
+            m0 = m;
+          }
+
+        }
 
         tn = std::chrono::high_resolution_clock::now();
         //std::cout << "\rLDA: M = " << M << ", K = " << K << ", V = " << V << ", alpha = "
@@ -264,7 +274,7 @@ int model::test()
 int model::read_data()
 {
     std::ifstream fin;
-	
+
     // read training data
     trngdata = new dataset;
     fin.open(ddir + dfile, std::ios::binary);
@@ -277,7 +287,7 @@ int model::read_data()
     // randomly initialise model variables for training
     std::cout << "Now randomly initialising model variables for training" << std::endl;
     init_train();
-    
+
     if (testing_type == SEPARATE_TEST)
     {
         // read held-out testing data
@@ -286,15 +296,15 @@ int model::read_data()
         testdata->read(fin);
         fin.close();
         test_M = testdata->M;
-        
+
         // initialise aux variables for testing
         init_test();
     }
-    
+
     // construct the reverse map (currently stupidly by reading back)
     for (auto w : word2id)
             id2word[w.second] = w.first;
-    
+
     //display all configurations
     std::cout << "We will perform ";
     switch (testing_type)
@@ -321,7 +331,7 @@ int model::read_data()
     std::cout << "beta = " << beta << std::endl;
     std::cout << "K = " << K << std::endl;
     std::cout << "V = " << V << std::endl;
-	
+
     return 0;
 }
 
@@ -360,7 +370,7 @@ int model::parse_args(std::vector<std::string> arguments)
                 vfile = name + ".vocab";
 		tfile = name + "-test.dat";
 		dfile = name + "-0" + ".dat";
-            }    
+            }
         }
         else if (*arg == "--alpha")
         {
@@ -395,13 +405,13 @@ int model::parse_args(std::vector<std::string> arguments)
         else if (*arg == "--num-top-words")
         {
             int _n_topWords = std::stoi(*(++arg));
-            if (_n_topWords > 0) 
+            if (_n_topWords > 0)
                 n_topWords = _n_topWords;
         }
     }
 
 
-    //Check specific parameter    
+    //Check specific parameter
     if (testing_type == SEPARATE_TEST)
     {
         if (tfile == "")
@@ -452,7 +462,7 @@ int model::init_train()
             unsigned w = trngdata->docs[m]->words[n];
             unsigned short topic = rng_.rand_k(K);
             z[m][n] = topic;
-			
+
             // number of instances of word i assigned to topic j
             n_wk[w][topic] += 1;
             // number of words in document i assigned to topic j
@@ -477,7 +487,7 @@ int model::init_train()
         nd_m[k] = 0;
         rev_mapper[k] = K;
     }
-        
+
     specific_init();
 
     return 0;
@@ -581,11 +591,11 @@ int model::save_model(unsigned iter) const
     save_model_params(mdir + model_name + ".params");
     save_model_phi(mdir + model_name + ".phi");
     save_model_time(mdir + model_name + ".time");
-    if (testing_type == SEPARATE_TEST || testing_type == SELF_TEST) 
-        save_model_llh(mdir + model_name + ".llh");    
+    if (testing_type == SEPARATE_TEST || testing_type == SELF_TEST)
+        save_model_llh(mdir + model_name + ".llh");
     if (n_topWords > 0)
         save_model_topWords(mdir + model_name + ".twords");
-	
+
     return 0;
 }
 
@@ -594,7 +604,7 @@ int model::save_model_time(std::string filename) const
     std::ofstream fout(filename);
     if (!fout)
         throw std::runtime_error( "Error: Cannot open file to save: " + filename);
-		
+
     for (unsigned r = 0; r < time_ellapsed.size(); ++r)
         fout << time_ellapsed[r] << std::endl;
 
@@ -609,10 +619,10 @@ int model::save_model_llh(std::string filename) const
     std::ofstream fout(filename);
     if (!fout)
         throw std::runtime_error( "Error: Cannot open file to save: " + filename );
-    
+
     for (unsigned r = 0; r < likelihood.size(); ++r)
         fout << likelihood[r] << std::endl;
-	
+
     fout.close();
     std::cout << "llh done" << std::endl;
 
@@ -631,10 +641,10 @@ int model::save_model_params(std::string filename) const
     fout << "num-docs=" << M << std::endl;
     fout << "num-words=" << V << std::endl;
     fout << "num-iters=" << n_iters << std::endl;
-    
+
     fout.close();
     std::cout << "others done" << std::endl;
-    
+
     return 0;
 }
 
@@ -698,6 +708,6 @@ int model::save_model_phi(std::string filename) const
 
     fout.close();
     std::cout << "phi done" << std::endl;
-    
+
     return 0;
 }

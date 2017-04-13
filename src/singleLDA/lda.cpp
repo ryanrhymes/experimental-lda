@@ -19,7 +19,7 @@ int simpleLDA::sampling(unsigned m)
     for (unsigned n = 0; n < trngdata->docs[m]->length; ++n)
     {
         unsigned w = trngdata->docs[m]->words[n];
-		
+
         // remove z_ij from the count variables
         unsigned short topic = z[m][n]; unsigned short old_topic = topic;
         remove_from_topic( w, m, topic);
@@ -47,6 +47,7 @@ int simpleLDA::sampling(unsigned m)
         nd_m[k.idx] = 0;
         rev_mapper[k.idx] = K;
     }
+
     return 0;
 }
 
@@ -113,7 +114,7 @@ int sparseLDA::specific_init()
         }
         std::sort(nws[v].begin(), nws[v].end(), std::greater<std::pair<unsigned, unsigned short>>());
     }
-	
+
     q1 = new double[K];
     // compute ssum
     ssum = 0;
@@ -122,7 +123,7 @@ int sparseLDA::specific_init()
         q1[k] = alphaK / (n_k[k] + Vbeta);
         ssum += 1 / (n_k[k] + Vbeta);
     }
-    ssum *= alphaK * beta;		
+    ssum *= alphaK * beta;
     return 0;
 }
 
@@ -194,7 +195,7 @@ int sparseLDA::sampling(unsigned m)
         {
                 u -= ssum + rsum;
                 for (topic = -1; u > 0; u -= p[++topic] );
-                topic = nws[w][topic].second;	
+                topic = nws[w][topic].second;
         }
 
         if (topic!=old_topic) //maintaining the correct encoding of nw
@@ -335,7 +336,7 @@ int aliasLDA::sampling(unsigned m)
                 {
                     q[w].noSamples++;
                     if(q[w].noSamples > K>>1 )
-                    {	
+                    {
                         generateQtable(w);
                     }
                     new_topic = q[w].sample(rng_.rand_k(K), rng_.rand_double());
@@ -456,7 +457,7 @@ int FTreeLDA::sampling(unsigned m)
         nd_m[k.idx] = 0;
         rev_mapper[k.idx] = K;
     }
-    return 0;	
+    return 0;
 }
 
 int forestLDA::specific_init()
@@ -622,7 +623,7 @@ int lightLDA::sampling(unsigned m)
                     }
                 }
             }
-		
+
             {
                 // Draw a topic from word-proposal
                 q[w].noSamples++;
@@ -632,7 +633,7 @@ int lightLDA::sampling(unsigned m)
                 }
                 new_topic = q[w].sample(rng_.rand_k(K), rng_.rand_double());
 
-			
+
                 if (topic != new_topic)
                 {
                     //2. Find acceptance probability

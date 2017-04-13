@@ -31,7 +31,7 @@ int main(int argc, char ** argv)
 		stopwords.insert(temp);
 	fin.close();
 	std::cout << "Number of stopwords detected: " << stopwords.size() << std::endl;
-	
+
 	//read each text file and write binary datapack
 	for (unsigned i = 0; i < num_packs; ++i)
 	{
@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
 
 	// test_data set
 	{
-		std::cout<< data_name << "-test"<<std::endl;	
+		std::cout<< data_name << "-test"<<std::endl;
 		temp = data_name + "-test.txt";
 		dp = new dataset;
 		dp->read_data(temp, &word2id, &stopwords);
@@ -66,7 +66,7 @@ int main(int argc, char ** argv)
 		id2word[w.second] = w.first;
 	}
 	fout.close();
-	
+
 	dataset test2;
 	fin.open(data_name + "-0.dat", std::ios::binary);
 	test2.read(fin);
@@ -80,6 +80,5 @@ int main(int argc, char ** argv)
 	}
 	std::cout << std::endl;
 
-	system("pause");
 	return 0;
 }
