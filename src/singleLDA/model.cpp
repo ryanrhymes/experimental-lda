@@ -197,6 +197,7 @@ int model::train()
 
         std::cout << "Iteration " << iter << " ..." << std::endl;
         ts = std::chrono::high_resolution_clock::now();
+        auto t1 = std::chrono::high_resolution_clock::now();
         int m0 = 0;
 
         // for each document
@@ -204,11 +205,11 @@ int model::train()
           sampling(m);
 
           tn = std::chrono::high_resolution_clock::now();
-          auto ti = std::chrono::duration_cast<std::chrono::milliseconds>(tn - ts).count();
+          auto ti = std::chrono::duration_cast<std::chrono::milliseconds>(tn - t1).count();
           if (ti >= 1000) {
             std::cout << "speed: " << (m - m0) << " docs/s" << std::endl;
             m0 = m;
-            ts = tn;
+            t1 = tn;
           }
 
         }

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DATASETS="nips"
-METHODS="simpleLDA"
+DATASETS="nytimes"
+METHODS="sparseLDA"
 NUM_ITER="10"
 NUM_TOPICS="1000"
 NT="1"
@@ -27,10 +27,6 @@ do
 	#valgrind --leak-check=full --show-leak-kinds=all
 	dist/singleLDA --method "$METHOD" --testing-mode net --alpha 50 --beta 0.1 --num-threads $NT --num-topics $NUM_TOPICS --num-iterations $NUM_ITER --output-state-interval 1 --output-model $DIR_NAME --num-top-words 15 --dataset data/"$DATASET" | tee -a $DIR_NAME/log.txt
 
-	git add "$DIR_NAME"
-	git pull
-	git commit -m "Experiments on Amazon EC2"
-	git push
 
 done
 done

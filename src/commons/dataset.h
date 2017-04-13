@@ -12,42 +12,42 @@
 
 class dataset
 {
-    const int version = 1;
+  const int version = 1;
 
-public:
+  public:
 
     struct document
     {
-    public:
-   	unsigned *words;
-	unsigned length;
+      public:
+     	unsigned *words;
+    	unsigned length;
 
-        document()
-	{
-            words = NULL;
-            length = 0;
-	}
+      document()
+    	{
+        words = NULL;
+        length = 0;
+    	}
 
-	document(unsigned length)
-	{
-            this->length = length;
-            words = new unsigned[length];
-	}
+    	document(unsigned length)
+    	{
+        this->length = length;
+        words = new unsigned[length];
+    	}
 
-	~document()
-	{
-            if (words)
-		delete[] words;
-	
-	}
+    	~document()
+    	{
+        if (words)
+    		  delete[] words;
+    	}
     };
+
     document ** docs;
     unsigned M; // number of documents
     unsigned V; // number of words
-    
+
     dataset();
     ~dataset();
-    
+
     void add_doc(document * doc, unsigned idx);
 
     int read_data(std::string dfile, std::map<std::string, unsigned> * wordmap, std::set<std::string> * stopwords);
@@ -57,4 +57,3 @@ public:
 };
 
 #endif
-
