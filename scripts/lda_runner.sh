@@ -1,8 +1,8 @@
 #!/bin/bash
 
-DATASETS="nytimes"
-METHODS="sparseLDA"
-NUM_ITER="10"
+DATASETS="nips"
+METHODS="simpleLDA"
+NUM_ITER="5"
 NUM_TOPICS="1000"
 NT="1"
 

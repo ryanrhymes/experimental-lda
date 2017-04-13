@@ -191,8 +191,8 @@ int model::train()
             time_ellapsed.push_back(std::chrono::duration_cast<std::chrono::milliseconds>(tn - ts).count());
             test();
             // saving the model
-            std::cout << "Saving the model at iteration " << iter << "..." << std::endl;
-            save_model(iter);
+            // std::cout << "Saving the model at iteration " << iter << "..." << std::endl;
+            // save_model(iter);
         }
 
         std::cout << "Iteration " << iter << " ..." << std::endl;
@@ -215,9 +215,7 @@ int model::train()
         }
 
         tn = std::chrono::high_resolution_clock::now();
-        //std::cout << "\rLDA: M = " << M << ", K = " << K << ", V = " << V << ", alpha = "
-	//	  << alpha << ", beta = " << beta << std::endl; //
-	}
+	   }
         test();
 	std::cout << "Gibbs sampling completed!" << std::endl;
 	std::cout << "Saving the final model!" << std::endl;
@@ -584,8 +582,8 @@ int model::save_model(unsigned iter) const
     if (iter >= 0)
     {
         std::ostringstream sstr1;
-	sstr1 << std::setw(5) << std::setfill('0') << iter;
-	model_name += sstr1.str();
+	      sstr1 << std::setw(5) << std::setfill('0') << iter;
+	      model_name += sstr1.str();
     }
     else
     	model_name += "final";
@@ -702,8 +700,8 @@ int model::save_model_phi(std::string filename) const
     float *phi_w = new float[K];
     for (unsigned w = 0; w < V; ++w)
     {
-	for (unsigned short k = 0; k < K; ++k)
-            phi_w[k] = (n_wk[w][k] + beta) / (n_k[k] + Vbeta);
+	     for (unsigned short k = 0; k < K; ++k)
+        phi_w[k] = (n_wk[w][k] + beta) / (n_k[k] + Vbeta);
         fout.write((char *)(phi_w), sizeof(float)*K);
     }
     delete[] phi_w;
