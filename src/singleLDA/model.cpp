@@ -208,6 +208,7 @@ int model::train()
           if (ti >= 1000) {
             std::cout << "speed: " << (m - m0) << " docs/s" << std::endl;
             m0 = m;
+            ts = tn;
           }
 
         }
